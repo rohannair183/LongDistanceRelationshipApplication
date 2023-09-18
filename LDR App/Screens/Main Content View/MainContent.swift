@@ -9,23 +9,25 @@ import SwiftUI
 
 struct MainContent: View {
     @ObservedObject var appState: AppState
+    
     var body: some View {
-        if appState.appStage == .auth || appState.user.isEmpty{
+        if appState.appStage == .auth {
             
             OnboardingScreen(appState:appState)
-            
-        }else if appState.appStage == .invitation && appState.userPartner.isEmpty{
+        }else if appState.appStage == .invitation && appState.userPartner.isEmpty
+        {
 
             InvitePartnerScreen(appState: appState)
             
-        }else if (appState.appStage == .waitingForUser || appState.userPartner.isEmpty != true) && appState.appStage != .main{
+        }else if appState.appStage == .invitation{
             
             Text("Waiting for your partner to enter your Invite Code!")
-            
         }else if appState.appStage == .main{
             
             MainApp(appState: appState)
-            
+                .disabled(appState.isLoading)
+        }else if appState.appStage == .loading{
+            ProgressView()
         }
         
     }

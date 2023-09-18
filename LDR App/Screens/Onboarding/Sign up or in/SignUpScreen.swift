@@ -31,10 +31,10 @@ struct SignUpScreen: View {
                 SecureTextInputField(text: $password, placeHolder: "Password", keyboardType: .default, sfSymbol: "lock.fill")
             }.padding()
             Button {
-                authManager.registerUser(fName: fName, lName: lName, email: email, password: password, returnUser: saveUser)
-                withAnimation(.easeIn){
-                    appState.appStage = .invitation
-                }
+                authManager.registerUser(appState: appState, fName: fName, lName: lName, email: email, password: password, returnUser: saveUser)
+//                withAnimation(.easeIn){
+//                    appState.appStage = .invitation
+//                }
                 
             }label: {
                 Text("Sign up")

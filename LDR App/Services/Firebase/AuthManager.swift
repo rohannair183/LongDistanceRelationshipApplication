@@ -14,8 +14,9 @@ let db = Firestore.firestore()
 class AuthManager: ObservableObject{
     @Published var users: [User] = []
     
-    func registerUser (fName:String, lName:String, email:String, password:String,  returnUser: @escaping (User?) -> Void){
+    func registerUser (appState: AppState, fName:String, lName:String, email:String, password:String,  returnUser: @escaping (User?) -> Void){
         Auth.auth().createUser(withEmail:email, password: password){ result, error in
+            appState.appStage = .loading
             if error != nil{
                 print(error!.localizedDescription)
             }else{
@@ -26,14 +27,17 @@ class AuthManager: ObservableObject{
                     } catch let error {
                         print("Error writing city to Firestore: \(error)")
                     }
+                    appState.user.append(user)
+                    appState.setAppState(appState: appState, user: user)
                 }
                 returnUser(user)
                 print(result!.description)
             }
+            
         }
     }
     
-    func loginUser (appState: AppState, email: String, password: String, returnUser: @escaping (User?) -> Void){
+    func loginUser (appState: AppState, email: String, password: String){
         var user: User? = nil
         Auth.auth().signIn(withEmail:email.lowercased(), password: password){ result, error in
             if error != nil{
@@ -44,8 +48,6 @@ class AuthManager: ObservableObject{
                     if let document = document, document.exists {
                         do{
                             user = try document.data(as:User.self)
-                            returnUser(user)
-                            
                             db.collection("Users").whereField("id", isEqualTo: user!.partnerId ?? "")
                                 .getDocuments() { (querySnapshot, err) in
                                     if  querySnapshot!.documents.count == 1{
@@ -53,6 +55,7 @@ class AuthManager: ObservableObject{
                                         do{
                                             try appState.userPartner.append(partner.data(as: User.self))
                                             if let user{
+                                                appState.user.append(user)
                                                 appState.setAppState(appState: appState, user: user)
                                             }
                                         }catch {
@@ -61,8 +64,8 @@ class AuthManager: ObservableObject{
                                         print("Your partner:  => \(appState.userPartner[0].firstName)")
                                     }else{
                                         if let user{
+                                            appState.user.append(user)
                                             appState.setAppState(appState: appState, user: user)
-
                                         }
                                     }
                                 }
@@ -101,6 +104,7 @@ class AuthManager: ObservableObject{
             return joinCode
         }
     }
+    
     func connectWithPartner(code:Int, appState:AppState){
         let userRef = db.collection("Users").document(appState.user[0].email.lowercased())
         db.collection("Users").whereField("join code", isEqualTo: code)
@@ -120,6 +124,7 @@ class AuthManager: ObservableObject{
                             
                             if appState.userPartner[0].partnerId != nil{
                                 partnerRef.updateData(["partner joined": true])
+                                partnerRef.updateData(["partner email": appState.user[0].email])
                                 appState.user[0].partnerJoined = true
                                 appState.appStage = .main
                             }

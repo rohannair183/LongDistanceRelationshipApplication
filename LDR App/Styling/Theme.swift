@@ -27,17 +27,19 @@ enum Fonts{
     case smallTitle
     case body
     case button
+    case cardBody
     case caption
 }
 
 func getFont(name:Fonts) -> Font{
     switch(name){
-    case .largeTitle: return Font.custom("SFProDisplay-Bold", size: 30)
-        case .mediumTitle: return Font.custom("SFProDisplay-Semibold", size: 28)
-        case .smallTitle: return Font.custom("SFProDisplay-Semibold", size: 22)
+        case .largeTitle: return Font.custom("SFProDisplay-Semibold", size: 28)
+        case .mediumTitle: return Font.custom("SFProDisplay-Semibold", size: 24)
+        case .smallTitle: return Font.custom("SFProDisplay-Semibold", size: 20)
         case .body: return Font.custom("SFProDisplay-Regular", size: 20)
-        case .button: return Font.custom("SFProDisplay-Light", size: 20)
-        case .caption: return Font.custom("SFProDisplay-Light", size: 13)
+        case .cardBody: return Font.custom("SFProDisplay-Regular", size: 14)
+        case .button: return Font.custom("SFProDisplay-Light", size: 18)
+        case .caption: return Font.custom("SFProDisplay-Light", size: 12)
     }
 }
 
@@ -54,6 +56,7 @@ class Theme: ObservableObject{
     @Published var mediumTitle:Font
     @Published var smallTitle:Font
     @Published var body:Font
+    @Published var cardBody:Font
     @Published var button:Font
     @Published var caption:Font
     
@@ -61,7 +64,7 @@ class Theme: ObservableObject{
     @Published var mediumSpacing:CGFloat
     @Published var smallSpacing:CGFloat
     
-    init(darkColor: Color, backgroundColor: Color, lightColor:Color, contrastBackground: Color, secondaryColor: Color, shadowColor: Color, bodyTextColor: Color, largeTitle: Font, mediumTitle: Font, smallTitle: Font, body: Font, button: Font, caption: Font, largeSpacing: CGFloat, mediumSpacing: CGFloat, smallSpacing: CGFloat) {
+    init(darkColor: Color, lightColor: Color, backgroundColor: Color, contrastBackground: Color, secondaryColor: Color, shadowColor: Color, bodyTextColor: Color, largeTitle: Font, mediumTitle: Font, smallTitle: Font, body: Font, cardBody: Font, button: Font, caption: Font, largeSpacing: CGFloat, mediumSpacing: CGFloat, smallSpacing: CGFloat) {
         self.darkColor = darkColor
         self.lightColor = lightColor
         self.backgroundColor = backgroundColor
@@ -69,26 +72,26 @@ class Theme: ObservableObject{
         self.secondaryColor = secondaryColor
         self.shadowColor = shadowColor
         self.bodyTextColor = bodyTextColor
-        
         self.largeTitle = largeTitle
         self.mediumTitle = mediumTitle
         self.smallTitle = smallTitle
         self.body = body
+        self.cardBody = cardBody
         self.button = button
         self.caption = caption
-        
         self.largeSpacing = largeSpacing
         self.mediumSpacing = mediumSpacing
         self.smallSpacing = smallSpacing
     }
+    
     
 }
 
 var themes: [Theme] = [
     Theme(
         darkColor: Color(hex: 0x36374b),
-        backgroundColor: Color(hex:0xe8dbcb),
         lightColor:Color(hex: 0xF6F6F6),
+        backgroundColor: Color(hex:0xe8dbcb),
         contrastBackground: Color(hex: 0xe2b9b3),
         secondaryColor: Color(hex:0x7bb4ae),
         shadowColor: Color(hex:0xb0413e),
@@ -98,6 +101,7 @@ var themes: [Theme] = [
         mediumTitle: getFont(name: .mediumTitle),
         smallTitle: getFont(name: .smallTitle),
         body: getFont(name: .body),
+        cardBody: getFont(name: .cardBody),
         button: getFont(name: .button),
         caption: getFont(name: .caption),
         
@@ -107,8 +111,8 @@ var themes: [Theme] = [
     ,
     Theme(
         darkColor: Color(hex: 0x36374b),
-        backgroundColor: Color(hex:0xe8dbcb),
         lightColor:Color(hex: 0xF6F6F6),
+        backgroundColor: Color(hex:0xe8dbcb),
         contrastBackground: Color(hex: 0xe2b9b3),
         secondaryColor: Color(hex:0x7bb4ae),
         shadowColor: Color(hex:0xb0413e),
@@ -118,6 +122,7 @@ var themes: [Theme] = [
         mediumTitle: getFont(name: .mediumTitle),
         smallTitle: getFont(name: .smallTitle),
         body: getFont(name: .body),
+        cardBody: getFont(name: .cardBody),
         button: getFont(name: .button),
         caption: getFont(name: .caption),
         
@@ -138,6 +143,7 @@ struct Theme_Preview: PreviewProvider {
                 Text("This is some medium title text").font(currentTheme.mediumTitle)
                 Text("This is some small title text").font(currentTheme.smallTitle)
                 Text("This is some body text").font(currentTheme.body)
+                Text("This is some Card body text").font(currentTheme.cardBody)
                 Text("This is some button text").font(currentTheme.button)
                 Text("This is some caption text").font(currentTheme.caption)
             }

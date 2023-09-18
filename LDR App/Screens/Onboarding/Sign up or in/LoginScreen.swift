@@ -24,7 +24,7 @@ struct LoginScreen: View {
             SecureTextInputField(text: $password, placeHolder: "Password", keyboardType: .default, sfSymbol: "lock.fill").padding()
             
             Button("Login"){
-                authManager.loginUser(appState: appState, email: email, password: password, returnUser: saveUser)
+                authManager.loginUser(appState: appState, email: email, password: password)
             }.buttonStyle(PrimaryButton())
             
             Button("Don't have an account? Sign Up"){
@@ -37,14 +37,6 @@ struct LoginScreen: View {
         
         
     }
-    
-    func saveUser(user: User?){
-        appState.user.append(user!)
-        print("User Email: \(appState.user[0].email)")
-
-    }
-
-    
 }
 struct LoginScreen_Previews: PreviewProvider {
     static var previews: some View {

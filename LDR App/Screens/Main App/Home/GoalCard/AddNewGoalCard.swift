@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+import EventKit
 struct AddNewGoalCard: View {
     
     @ObservedObject var appState: AppState
@@ -17,17 +17,19 @@ struct AddNewGoalCard: View {
     var goalCardModelView = GoalCardModelView()
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
-                TextField("What goal do you have in mind?", text: $userInputs.title)
-                    .frame(maxWidth: .infinity)
-                //                    .multilineTextAlignment(.center)
-                    .padding(.vertical, 10)
-                    .overlay(Rectangle().frame(height: 2).padding(.top, 35))
-                    .keyboardType(.default)
-                    .foregroundColor(Color.gray)
-                    .padding()
+                
                 Form{
+                    Section{
+                        TextField("What goal do you have in mind?", text: $userInputs.title)
+                            .frame(maxWidth: .infinity)
+                        //                    .multilineTextAlignment(.center)
+                            .padding(.vertical, 10)
+                            .overlay(Rectangle().frame(height: 2).padding(.top, 35))
+                            .keyboardType(.default)
+                            .padding()
+                    }
                     Section{
                         Picker("Frequency:", selection: $userInputs.frequency){
                             ForEach(GoalCardModel.Frequency.allCases, id: \.self.rawValue){option in
@@ -44,11 +46,11 @@ struct AddNewGoalCard: View {
                     
                     Section{
                         DatePicker(selection: $userInputs.dateStart, in: Date.now..., displayedComponents: .date) {
-                                       Text("Select day to start")
-                                   }
+                            Text("Select day to start")
+                        }
                         DatePicker(selection: $userInputs.dateEnd, in: Date.now..., displayedComponents: .date) {
-                                       Text("Select day to end")
-                                   }
+                            Text("Select day to end")
+                        }
                     }
                     
                     Section{
@@ -58,7 +60,6 @@ struct AddNewGoalCard: View {
             }.toolbar{
                 ToolbarItem(placement: .cancellationAction){
                     Button{
-                        
                         showAddNewGoalCard.toggle()
                     }label:{
                         Text("Cancel").foregroundColor(Color.red)
@@ -67,6 +68,10 @@ struct AddNewGoalCard: View {
                 ToolbarItem(placement: .confirmationAction){
                     Button{
                         if userInputs.title.isEmpty != true{
+                            userInputs.dateStart = Calendar.current.startOfDay(for: userInputs.dateStart)
+                            
+                            userInputs.dateEnd = Calendar.current.startOfDay(for: userInputs.dateEnd)
+                            
                             goalCardModelView.addCard(goalCard: userInputs, appState: appState)
                             showAddNewGoalCard.toggle()
                         }else{
@@ -79,8 +84,9 @@ struct AddNewGoalCard: View {
                     }
                 }
                 
-            }
         }
+        }
+        
         
     }
 }

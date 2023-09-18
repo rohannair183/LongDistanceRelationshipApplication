@@ -5,7 +5,7 @@
 //  Created by Rohan Nair on 2023-06-19.
 //
 
-import Foundation
+import SwiftUI
 import FirebaseFirestoreSwift
 
 class User: Codable, ObservableObject, Identifiable{
@@ -15,7 +15,9 @@ class User: Codable, ObservableObject, Identifiable{
     @Published var email: String
     @Published var partnerJoined: Bool
     @Published var partnerId: String?
+    @Published var partnerEmail: String?
     @Published var joinCode: Int? = nil
+    @Published var profileURL: String? = nil
     
     enum CodingKeys: String, CodingKey {
             case id
@@ -24,7 +26,9 @@ class User: Codable, ObservableObject, Identifiable{
             case email
             case partnerJoined = "partner joined"
             case partnerId = "partner id"
+            case partnerEmail = "partner email"
             case joinCode = "join code"
+            case profileURL = "profile URL"
         }
         
         required init(from decoder: Decoder) throws {
@@ -35,7 +39,9 @@ class User: Codable, ObservableObject, Identifiable{
             email = try container.decode(String.self, forKey: .email)
             partnerJoined = try container.decode(Bool.self, forKey: .partnerJoined)
             partnerId = try container.decodeIfPresent(String.self, forKey: .partnerId)
+            partnerEmail = try container.decodeIfPresent(String.self, forKey: .partnerEmail)
             joinCode = try container.decodeIfPresent(Int.self, forKey: .joinCode)
+            profileURL = try container.decodeIfPresent(String.self, forKey: .profileURL)
         }
     
     func encode(to encoder: Encoder) throws {
@@ -46,18 +52,19 @@ class User: Codable, ObservableObject, Identifiable{
             try container.encode(email, forKey: .email)
             try container.encode(partnerJoined, forKey: .partnerJoined)
             try container.encode(partnerId, forKey: .partnerId)
+            try container.encode(partnerEmail, forKey: .partnerEmail)
             try container.encode(joinCode, forKey: .joinCode)
-
+            try container.encode(profileURL, forKey: .profileURL)
         }
     
-    init(id: String = UUID().uuidString, firstName: String, lastName: String, email: String, partnerJoined: Bool, partnerId: String? = nil) {
+    init(id: String = UUID().uuidString, firstName: String, lastName: String, email: String, partnerJoined: Bool, partnerId: String? = nil, partnerEmail: String? = nil, profileURL: String? = nil) {
         self.id = id
         self.firstName = firstName
         self.lastName = lastName
         self.email = email
         self.partnerJoined = partnerJoined
         self.partnerId = partnerId
+        self.partnerEmail = partnerEmail
+        self.profileURL = profileURL
     }
-    
-   
 }

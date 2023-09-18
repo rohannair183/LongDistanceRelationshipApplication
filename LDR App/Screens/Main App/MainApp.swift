@@ -11,16 +11,13 @@ struct MainApp: View {
     @ObservedObject var appState: AppState
     
     var body: some View {
+        
         TabView{
             HomeScreen(appState: appState)
                 .tabItem{
                     Label("Home", systemImage: "house")
                 }
-            CalendarScreen()
-                .tabItem{
-                    Label("Calendar", systemImage: "calendar")
-                }
-            Text("Journal")
+            MainJournal(appState: appState)
                 .tabItem{
                     Label("Journal", systemImage: "doc.plaintext")
                 }
@@ -28,11 +25,12 @@ struct MainApp: View {
                 .tabItem{
                     Label("Album", systemImage: "photo")
                 }
-            Text("Settings")
+            MainSettings(appState: appState)
                 .tabItem{
                     Label("Settings", systemImage: "gearshape")
                 }
         }
+        
     }
 }
 
